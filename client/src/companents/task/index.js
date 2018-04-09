@@ -10,7 +10,7 @@ const TaskMenuItem = ({itemName, status, onChangeTaskStatus = f => f}) => (
   </span>
 );
 
-const Task = ({id, body, createDate, status, onChangeTaskStatus = f => f}) => {
+const Task = ({id, body, creationDate, status, onChangeTaskStatus = f => f}) => {
   return (
     <div className={`card mb-2`}>
       <div className="card-header p-2">
@@ -26,7 +26,7 @@ const Task = ({id, body, createDate, status, onChangeTaskStatus = f => f}) => {
             <TaskMenuItem itemName={"Удалено"} status={S.DELETED} onChangeTaskStatus={onChangeTaskStatus}/>
           </div>
         </div>
-        <span className="">{(new Date(createDate)).toLocaleString("ru-RU")}</span>
+        <span className="">{(new Date(creationDate)).toLocaleString("ru-RU")}</span>
       </div>
       <div className="card-body p-2">
         <span className="h6">{body}</span>

@@ -5,39 +5,57 @@ import Header from "./companents/header";
 import TaskList from "./companents/tasklist";
 
 import * as S from "./lib/taskstatus";
+import { getTaskList, createNewTask, updateTask } from "./lib/api-fetch-helpers";
 
 class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      error: "",
+      isLoading: false,
       tasks: []
     };
   };
 
+  componentWillMount() {
+    this.setState({isLoading: true});
+    getTaskList()
+      .then(tasks => {
+        this.setState({tasks, isLoading: false})
+      })
+      .catch(error => {
+        this.setState({
+          error: error.message,
+          isLoading: false
+        });
+      });
+  };
+
   handlerAddTask = body => {
-    const maxId = this.state.tasks.reduce((max, el) => el.id > max ? el.id : max, 0);
-    const tasks = [
-      ...this.state.tasks,
-      {
-        id: maxId + 1,
-        body: body,
-        createDate: Date.now(),
-        status: S.WAITING
-      }
-    ];
-    this.setState({
-      tasks
-    });
+    createNewTask(body)
+      .then(task => {
+        const tasks = [...this.state.tasks, task];
+        this.setState({tasks});
+      })
+      .catch(error => {
+        this.setState({
+          error: error.message
+        });
+      });
   };
 
   handlerChangeTaskStatus = id => status => {
     const tasks = [...this.state.tasks];
     const task = tasks.find(p => p.id === id);
     task.status = status;
-    this.setState({
-      tasks
-    });
+    updateTask(task)
+      .then(task => this.setState({tasks}))
+      .catch(error => {
+        this.setState({
+          error: error.message
+        });
+      });
   };
 
   render() {
@@ -45,7 +63,11 @@ class App extends Component {
     return (
       <Layout>
         <Header title="Task"/>
-        <TaskList onAddTask={this.handlerAddTask} onChangeTaskStatus={this.handlerChangeTaskStatus} {...this.state} />
+        {
+          this.state.isLoading ?
+            <span>Loaging</span> :
+            <TaskList onAddTask={this.handlerAddTask} onChangeTaskStatus={this.handlerChangeTaskStatus} tasks={[...this.state.tasks].reverse()} />
+        }
       </Layout>
     );
   }
