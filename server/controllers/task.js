@@ -1,6 +1,7 @@
 const Task = require('../models/task.model');
 var isNumber = require('is-number');
 
+// GET /api/v1/task/
 module.exports.getTaskList = (req, res, next) => {
   return Task.getTaskList()
     .then(tasklist => res.status(200).json(tasklist))
@@ -12,6 +13,7 @@ module.exports.getTaskList = (req, res, next) => {
     }));
 }
 
+// POST /api/v1/task/
 module.exports.createNewTask = (req, res, next) => {
   const {body, creationDate} = req.body;
   if (!body || !creationDate) {
@@ -38,11 +40,12 @@ module.exports.createNewTask = (req, res, next) => {
     }));
 };
 
+// PUT /api/v1/task/:id
 module.exports.updateTask = (req, res, next) => {
   const id = req.params.id;
   const task = req.body;
 
-  if (!id || !isNumber(id)) {
+  if (!isNumber(id)) {
     return res.status(404).json({
       error: {
         status: 404,
@@ -51,7 +54,7 @@ module.exports.updateTask = (req, res, next) => {
     });
   }
 
-  if (!task || !task.id || !task.body || !task.creationDate || !task.status) {
+  if (!task || !isNumber(task.id) || !task.body || !task.creationDate || !task.status) {
     return res.status(404).json({
       error: {
         status: 404,

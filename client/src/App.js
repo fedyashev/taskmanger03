@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Layout from "./companents/layout";
 import Header from "./companents/header";
 import TaskList from "./companents/tasklist";
+import Modal from "./companents/modal";
 
 import * as S from "./lib/taskstatus";
 import { getTaskList, createNewTask, updateTask } from "./lib/api-fetch-helpers";
@@ -25,6 +26,7 @@ class App extends Component {
         this.setState({tasks, isLoading: false})
       })
       .catch(error => {
+        console.log("Error", error);
         this.setState({
           error: error.message,
           isLoading: false
@@ -58,11 +60,19 @@ class App extends Component {
       });
   };
 
+  handlerCloseModal = () => {
+    const error = null;
+    this.setState({error});
+  };
+
   render() {
     //console.log(this.state.tasks);
     return (
       <Layout>
         <Header title="Task"/>
+        {
+          this.state.error ? <Modal title={"Error"} body={this.state.error} onCloseModal={() => this.handlerCloseModal()} /> : ""
+        }
         {
           this.state.isLoading ?
             <span>Loaging</span> :

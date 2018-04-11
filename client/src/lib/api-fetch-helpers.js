@@ -2,11 +2,13 @@ import fetch from "isomorphic-fetch";
 
 export const getTaskList = () => fetch("/api/v1/task", {method: "GET"})
   .then(response => {
-    const obj = response.json();
-    if (!response.ok) {
-      throw new Error(obj.error.message || "Unknow error");
+    if (response.status >= 400) {
+      console.log(response);
+      throw new Error(response.statusText || "Unknow error");
     }
-    return obj;
+    // const obj = response.json();
+    // return obj;
+    return response.json();
   });
 
 export const createNewTask = body => {
@@ -23,11 +25,11 @@ export const createNewTask = body => {
   };
   return fetch("/api/v1/task", opt)
     .then(response => {
-      const obj = response.json();
+      //const obj = response.json();
       if (!response.ok) {
-        throw new Error(obj.error.message || "Unknow error");
+        throw new Error(response.statusText || "Unknow error");
       }
-      return obj;
+      return response.json();
     });
 };
 
@@ -42,10 +44,10 @@ export const updateTask = task => {
   return fetch(`/api/v1/task/${task.id}`, opt)
     .then(response => {
       //console.log(response);
-      const obj = response.json();
+      //const obj = response.json();
       if (!response.ok) {
-        throw new Error(obj.error.message || "Unknow error");
+        throw new Error(response.statusText || "Unknow error");
       }
-      return obj;
+      return response.json();
     });
 };
