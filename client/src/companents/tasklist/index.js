@@ -2,7 +2,7 @@ import React from "react";
 
 import Task from "../task";
 
-const TaskList = ({onAddTask = f => f, onChangeTaskStatus = f => f, tasks}) => {
+const TaskList = ({onAddTask = f => f, onClickCancelEditTask = f => f, onChangeTaskStatus = f => f, onClickEditTask = f => f, onClickSaveUpdateBodyTask = f => f, tasks}) => {
   let _body;
 
   const handlerOnClick = () => {
@@ -29,7 +29,12 @@ const TaskList = ({onAddTask = f => f, onChangeTaskStatus = f => f, tasks}) => {
       </div>
 
       {
-        tasks.length > 0 && tasks.map(task => <Task key={task.id} onChangeTaskStatus={onChangeTaskStatus(task.id)} {...task}/>)
+        tasks.length > 0 && tasks.map(task => <Task key={task.id}
+                                                    onChangeTaskStatus={onChangeTaskStatus(task.id)}
+                                                    onClickEditTask={() => onClickEditTask(task.id)}
+                                                    onClickCancelEditTask={() => onClickCancelEditTask(task.id)}
+                                                    onClickSaveUpdateBodyTask={onClickSaveUpdateBodyTask(task.id)}
+                                                    {...task}/>)
       }
 
     </section>

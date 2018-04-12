@@ -22,7 +22,10 @@ class App extends Component {
   componentWillMount() {
     this.setState({isLoading: true});
     getTaskList()
-      .then(tasks => {
+      .then(tasklist => {
+        const tasks = tasklist.map(task => {
+          return {...task, editing: false};
+        });
         this.setState({tasks, isLoading: false})
       })
       .catch(error => {
@@ -36,7 +39,9 @@ class App extends Component {
 
   handlerAddTask = body => {
     createNewTask(body)
-      .then(task => {
+      .then(newTask => {
+        const task = {...newTask, editing: false};
+        task.editing = false;
         const tasks = [...this.state.tasks, task];
         this.setState({tasks});
       })
@@ -48,9 +53,55 @@ class App extends Component {
   };
 
   handlerChangeTaskStatus = id => status => {
+    //console.log(id, status);
     const tasks = [...this.state.tasks];
     const task = tasks.find(p => p.id === id);
     task.status = status;
+    updateTask(task)
+      .then(task => this.setState({tasks}))
+      .catch(error => {
+        this.setState({
+          error: error.message
+        });
+      });
+  };
+
+  handlerClickEditTask = id => {
+    //console.log(id, "Click Edit");
+    const tasks = [...this.state.tasks];
+    const task = tasks.find(p => p.id === id);
+    task.editing = true;
+    this.setState({tasks});
+    // updateTask(task)
+    //   .then(task => this.setState({tasks}))
+    //   .catch(error => {
+    //     this.setState({
+    //       error: error.message
+    //     });
+    //   });
+  };
+
+  handlerClickCancelEditTask = id => {
+    //console.log(id, "Click cancel edit");
+    const tasks = [...this.state.tasks];
+    const task = tasks.find(p => p.id === id);
+    task.editing = false;
+    this.setState({tasks});
+    // updateTask(task)
+    //   .then(task => {})
+    //   .catch(error => {
+    //     this.setState({
+    //       error: error.message
+    //     });
+    //   });
+  }
+
+  handlerClickSaveUpdateBodyTask = id => body => {
+    //console.log(id, body, "Click save body");
+    const tasks = [...this.state.tasks];
+    const task = tasks.find(p => p.id === id);
+    task.body = body;
+    task.editing = false;
     updateTask(task)
       .then(task => this.setState({tasks}))
       .catch(error => {
@@ -76,7 +127,12 @@ class App extends Component {
         {
           this.state.isLoading ?
             <span>Loaging</span> :
-            <TaskList onAddTask={this.handlerAddTask} onChangeTaskStatus={this.handlerChangeTaskStatus} tasks={[...this.state.tasks].reverse()} />
+            <TaskList onAddTask={this.handlerAddTask}
+                      onChangeTaskStatus={this.handlerChangeTaskStatus}
+                      onClickEditTask={this.handlerClickEditTask}
+                      onClickCancelEditTask={this.handlerClickCancelEditTask}
+                      onClickSaveUpdateBodyTask={this.handlerClickSaveUpdateBodyTask}
+                      tasks={[...this.state.tasks].reverse()} />
         }
       </Layout>
     );

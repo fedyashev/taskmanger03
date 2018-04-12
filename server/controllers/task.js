@@ -45,6 +45,8 @@ module.exports.updateTask = (req, res, next) => {
   const id = req.params.id;
   const task = req.body;
 
+  //console.log(task);
+
   if (!isNumber(id)) {
     return res.status(404).json({
       error: {
