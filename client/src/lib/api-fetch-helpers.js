@@ -1,15 +1,29 @@
 import fetch from "isomorphic-fetch";
 
-export const getTaskList = () => fetch("/api/v1/task", {method: "GET"})
-  .then(response => {
-    if (response.status >= 400) {
-      console.log(response);
-      throw new Error(response.statusText || "Unknow error");
+export const getTaskList = (filter) => {
+  let queryString = "";
+  if (filter) {
+    let arr = [];
+    for (let i in filter.status) {
+      arr.push(filter.status[i]);
     }
-    // const obj = response.json();
-    // return obj;
-    return response.json();
-  });
+    queryString = arr.filter(p => p.checked).map(p => `status[]=${p.value}`).join('&');
+    //console.log(queryString);
+  }
+  const path = "/api/v1/task";
+  const url = `${path}${queryString ? "/?" + queryString : ""}`;
+  return fetch(url, {method: "GET"})
+    .then(response => {
+      if (response.status >= 400) {
+        console.log(response);
+        throw new Error(response.statusText || "Unknow error");
+      }
+      // const obj = response.json();
+      // return obj;
+      return response.json();
+    });
+};
+
 
 export const createNewTask = body => {
   const data = {

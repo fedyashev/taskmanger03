@@ -3,7 +3,8 @@ var isNumber = require('is-number');
 
 // GET /api/v1/task/
 module.exports.getTaskList = (req, res, next) => {
-  return Task.getTaskList()
+  //console.log(req.query);
+  return Task.getTaskList(req.query)
     .then(tasklist => res.status(200).json(tasklist))
     .catch(err => res.status(500).json({
       error: {

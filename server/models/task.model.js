@@ -3,7 +3,8 @@ const Schema = mongoose.Schema;
 const autoIncrement = require('mongoose-auto-increment');
 const credentials = require('../credentials');
 
-const dbConnection = mongoose.createConnection(credentials.connectionString.mlab);
+const connectionString = process.env.NODE_ENV === "production" ? credentials.mlab.production : credentials.mlab.development;
+const dbConnection = mongoose.createConnection(connectionString);
 autoIncrement.initialize(dbConnection);
 
 const TaskSchema = new Schema({
@@ -25,8 +26,16 @@ Task.createNewTask = (body, creationDate) => {
   return task.save();
 };
 
-Task.getTaskList = () => {
-  return Task.find();
+Task.getTaskList = (filter) => {
+  const query = {};
+  if (filter.status) {
+    query["$or"] = filter.status.map(p => {
+      return {
+        status: p
+      };
+    });
+  }
+  return Task.find(query);
 };
 
 module.exports = Task;

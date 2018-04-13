@@ -1,8 +1,17 @@
 import React from "react";
 
 import Task from "../task";
+import TasklistFilter from "../tasklist-filter";
 
-const TaskList = ({onAddTask = f => f, onClickCancelEditTask = f => f, onChangeTaskStatus = f => f, onClickEditTask = f => f, onClickSaveUpdateBodyTask = f => f, tasks}) => {
+const TaskList = ({
+  onAddTask = f => f,
+  onClickCancelEditTask = f => f,
+  onChangeTaskStatus = f => f,
+  onClickEditTask = f => f,
+  onClickSaveUpdateBodyTask = f => f,
+  onApplyFilter = f => f,
+  tasks,
+  filter}) => {
   let _body;
 
   const handlerOnClick = () => {
@@ -15,8 +24,11 @@ const TaskList = ({onAddTask = f => f, onClickCancelEditTask = f => f, onChangeT
   return (
     <section>
       <div className="card mb-2">
-        <div className="card-header">
+        <div className="card-header p-2">
           <span className="h5">Задачи</span>
+          <div className="float-right">
+            <TasklistFilter filter={filter} onApplyFilter={onApplyFilter}/>
+          </div>
         </div>
         <div className="card-body p-2">
           <div className="input-group">

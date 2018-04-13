@@ -11,9 +11,12 @@ const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
 const credentials = require('./credentials');
 
-mongoose.connect(credentials.connectionString.mlab);
+const connectionString = process.env.NODE_ENV === "production" ? credentials.mlab.production : credentials.mlab.development;
+mongoose.connect(connectionString);
 // const dbConnection = mongoose.createConnection(credentials.connectionString.mlab);
 // autoIncrement.initialize(dbConnection);
+
+//console.log(process.env);
 
 const task = require('./routes/task');
 
