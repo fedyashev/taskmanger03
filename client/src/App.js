@@ -20,8 +20,8 @@ class App extends Component {
         status: {
           waiting: {value: "WAITING", checked: true},
           atwork: {value: "ATWORK", checked: true},
-          success: {value: "SUCCESS", checked: true},
-          failed: {value: "FAILED", checked: true},
+          success: {value: "SUCCESS", checked: false},
+          failed: {value: "FAILED", checked: false},
           deleted: {value: "DELETED", checked: false}
         }
       },
