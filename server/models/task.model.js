@@ -35,7 +35,7 @@ Task.getTaskList = (filter) => {
       };
     });
   }
-  return Task.find(query);
+  return Task.find(query).sort({id: 1});
 };
 
 module.exports = Task;
