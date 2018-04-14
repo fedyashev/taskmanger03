@@ -17,13 +17,8 @@ class App extends Component {
       error: "",
       isLoading: false,
       filter: {
-        status: {
-          waiting: {value: "WAITING", checked: true},
-          atwork: {value: "ATWORK", checked: true},
-          success: {value: "SUCCESS", checked: false},
-          failed: {value: "FAILED", checked: false},
-          deleted: {value: "DELETED", checked: false}
-        }
+        status: [S.WAITING, S.ATWORK],
+        sort: -1
       },
       tasks: []
     };
@@ -47,13 +42,19 @@ class App extends Component {
       });
   };
 
+  sortTaskByIdAsc = (a, b) => a.id - b.id;
+  sortTaskByIdDesc = (a, b) => b.id - a.id;
+
   handlerAddTask = body => {
     createNewTask(body)
       .then(newTask => {
         const task = {...newTask, editing: false};
         task.editing = false;
-        const tasks = [...this.state.tasks, task];
-        this.setState({tasks});
+        const { filter } = this.state;
+        if (filter.status.includes(task.status)) {
+          const tasks = [...this.state.tasks, task];
+          this.setState({tasks});
+        }
       })
       .catch(error => {
         this.setState({
@@ -65,23 +66,23 @@ class App extends Component {
   handlerChangeTaskStatus = id => status => {
     //console.log(id, status);
     let tasks = [...this.state.tasks];
-    let isStatusInFilter = false;
+    //let isStatusInFilter = false;
+    const { filter } = this.state;
 
-    const {filter} = this.state;
-    for (let i in filter.status) {
-      //console.log(i, filter.status[i].value, status);
-      if ((filter.status[i].value === status) && filter.status[i].checked === true) {
-        isStatusInFilter = true;
-        break;
-      }
-    }
+    // for (let i in filter.status) {
+    //   //console.log(i, filter.status[i].value, status);
+    //   if ((filter.status[i].value === status) && filter.status[i].checked === true) {
+    //     isStatusInFilter = true;
+    //     break;
+    //   }
+    // }
 
     const task = tasks.find(p => p.id === id);
     task.status = status;
     
     updateTask(task)
-      .then(task => {
-        const newTasks = isStatusInFilter ? tasks : tasks.filter(p => p.id !== id);
+      .then(newTask => {
+        const newTasks = filter.status.includes(newTask.status) ? tasks : tasks.filter(p => p.id !== id);
         this.setState({tasks: newTasks});
       })
       .catch(error => {
@@ -142,7 +143,7 @@ class App extends Component {
   };
 
   handlerApplyFilter = filter => {
-    //console.log(filter);
+    //console.log("Apply", filter);
     if (filter) {
       this.setState({filter, isLoading: true});
       getTaskList(filter)
@@ -179,7 +180,7 @@ class App extends Component {
                       onClickCancelEditTask={this.handlerClickCancelEditTask}
                       onClickSaveUpdateBodyTask={this.handlerClickSaveUpdateBodyTask}
                       onApplyFilter={this.handlerApplyFilter}
-                      tasks={[...this.state.tasks].reverse()}
+                      tasks={[...this.state.tasks].sort(this.state.filter.sort === 1 ? this.sortTaskByIdAsc : this.sortTaskByIdDesc)}
                       filter={this.state.filter}/>
         }
       </Layout>

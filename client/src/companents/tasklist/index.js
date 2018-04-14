@@ -11,7 +11,7 @@ const TaskList = ({
   onClickSaveUpdateBodyTask = f => f,
   onApplyFilter = f => f,
   tasks,
-  filter}) => {
+  filter }) => {
   let _body;
 
   const handlerOnClick = () => {

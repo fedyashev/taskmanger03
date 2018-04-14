@@ -2,12 +2,12 @@ import fetch from "isomorphic-fetch";
 
 export const getTaskList = (filter) => {
   let queryString = "";
-  if (filter) {
-    let arr = [];
-    for (let i in filter.status) {
-      arr.push(filter.status[i]);
-    }
-    queryString = arr.filter(p => p.checked).map(p => `status[]=${p.value}`).join('&');
+  if (filter && filter.status.length > 0) {
+    // let arr = [];
+    // for (let i in filter.status) {
+    //   arr.push(filter.status[i]);
+    // }
+    queryString = filter.status.map(p => `status[]=${p}`).join('&');
     //console.log(queryString);
   }
   const path = "/api/v1/task";
