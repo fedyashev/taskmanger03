@@ -67,12 +67,12 @@ module.exports.updateTask = (req, res, next) => {
     });
   }
 
-  return Task.findOneAndUpdate({id: task.id}, task)
+  return Task.findOneAndUpdate({id: task.id}, task, {new: true})
     .then(obj => {
       const {id, body, creationDate, status} = obj;
-      const task = {id, body, creationDate, status};
-      console.log(task);
-      return task;
+      const newTask = {id, body, creationDate, status};
+      console.log(newTask);
+      return newTask;
     })
     .then(task => res.status(200).json(task))
     .catch(err => res.status(500).json({

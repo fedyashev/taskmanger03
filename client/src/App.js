@@ -65,7 +65,7 @@ class App extends Component {
 
   handlerChangeTaskStatus = id => status => {
     //console.log(id, status);
-    let tasks = [...this.state.tasks];
+    const tasks = [...this.state.tasks];
     //let isStatusInFilter = false;
     const { filter } = this.state;
 
@@ -78,18 +78,20 @@ class App extends Component {
     // }
 
     const task = tasks.find(p => p.id === id);
-    task.status = status;
-    
-    updateTask(task)
-      .then(newTask => {
-        const newTasks = filter.status.includes(newTask.status) ? tasks : tasks.filter(p => p.id !== id);
-        this.setState({tasks: newTasks});
-      })
-      .catch(error => {
-        this.setState({
-          error: error.message
+
+    if (task) {
+      task.status = status;
+      updateTask(task)
+        .then(newTask => {
+          const newTasks = filter.status.includes(newTask.status) ? tasks : tasks.filter(p => p.id !== id);
+          this.setState({tasks: newTasks});
+        })
+        .catch(error => {
+          this.setState({
+            error: error.message
+          });
         });
-      });
+    }
   };
 
   handlerClickEditTask = id => {
