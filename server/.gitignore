@@ -3,6 +3,9 @@
 # dependencies
 node_modules
 
+# Credentials
+credentials.js
+
 # misc
 .DS_Store
 .env.local
