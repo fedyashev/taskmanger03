@@ -25,7 +25,10 @@ const TaskList = ({
     <section>
       <div className="card mb-2">
         <div className="card-header p-2">
-          <span className="h5">Задачи</span>
+          <span className="h5 mr-2">Задачи</span>
+          {
+            tasks.length && <span className="badge badge-primary">{tasks.length}</span>
+          }
           <div className="float-right">
             <TasklistFilter filter={filter} onApplyFilter={onApplyFilter}/>
           </div>
